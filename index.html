@@ -690,6 +690,11 @@
         <div class="loader"></div>
     </div>
 
+    <audio id="welcome-sound" autoplay>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <div class="video-background">
         <video autoplay muted loop playsinline>
             <source src="https://assets.mixkit.co/videos/preview/mixkit-circuit-board-with-data-flow-4375-large.mp4" type="video/mp4">
@@ -795,6 +800,9 @@
             </div>
             <button id="theme-toggle" class="ml-auto p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-white transition duration-300 ease-in-out" style="background-color: var(--bg-tertiary); color: var(--button-text-color);">
                 <i class="fas fa-sun" id="theme-icon"></i>
+            </button>
+            <button id="mute-toggle" class="p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-white transition duration-300 ease-in-out ml-2" style="background-color: var(--bg-tertiary); color: var(--button-text-color);">
+                <i class="fas fa-volume-up" id="volume-icon"></i>
             </button>
         </div>
     </header>
@@ -949,10 +957,10 @@
                 </div>
                 <div class="project-card p-6 rounded-lg shadow-md" style="border-color: var(--border-color); background-color: rgba(255, 255, 255, var(--card-bg-opacity));">
                     <h3 class="text-2xl font-bold mb-2" style="color: var(--accent-blue);">Mechanistic insights into enhanced photocatalytic H2O2 production induced by a Z-scheme heterojunction of copper bismuth oxide and molybdenum sulfide</h3>
-                    <p class="text-gray-300 leading-relaxed text-sm mb-4 short-abstract" style="color: var(--text-secondary);">
+                    <p class="text-300 leading-relaxed text-sm mb-4 short-abstract" style="color: var(--text-secondary);">
                         *Journal of Materials Chemistry A*, 2023. Focuses on improving hydrogen peroxide production through specific material combinations.
                     </p>
-                    <p class="text-gray-300 leading-relaxed text-sm full-abstract hidden" style="color: var(--text-secondary);">
+                    <p class="text-300 leading-relaxed text-sm full-abstract hidden" style="color: var(--text-secondary);">
                         **Full Abstract:** This research provides detailed mechanistic insights into the enhanced photocatalytic production of hydrogen peroxide (H2O2) using a novel Z-scheme heterojunction composed of copper bismuth oxide (CuBi2O4) and molybdenum sulfide (MoS2). We employ advanced spectroscopic and electrochemical techniques to unravel the charge transfer pathways and synergistic effects within this composite system, demonstrating a significant improvement in H2O2 yield and selectivity under visible light irradiation.
                     </p>
                     <button class="toggle-abstract-btn mt-2 inline-block text-sm font-semibold py-1 px-3 rounded-full" style="background-color: var(--accent-blue-dark); color: var(--button-text-color);">Read More</button>
@@ -1288,6 +1296,31 @@
                     }
                 });
             });
+
+            // Audio Playback and Mute Toggle
+            const welcomeSound = document.getElementById('welcome-sound');
+            const muteToggleButton = document.getElementById('mute-toggle');
+            const volumeIcon = document.getElementById('volume-icon');
+
+            // Attempt to play welcome sound automatically
+            welcomeSound.play().catch(error => {
+                console.log("Autoplay prevented for welcome sound:", error);
+                // If autoplay is prevented, the user will need to click the button to start it.
+                // The button will initially show the volume-up icon, indicating it's ready to play.
+            });
+
+            muteToggleButton.addEventListener('click', () => {
+                if (welcomeSound.paused) {
+                    welcomeSound.play();
+                    volumeIcon.classList.remove('fa-volume-mute');
+                    volumeIcon.classList.add('fa-volume-up');
+                } else {
+                    welcomeSound.pause();
+                    volumeIcon.classList.remove('fa-volume-up');
+                    volumeIcon.classList.add('fa-volume-mute');
+                }
+            });
+
 
             // Apply parallax on load and scroll
             applyParallax();
