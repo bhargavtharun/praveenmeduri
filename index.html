@@ -67,7 +67,30 @@
             scroll-behavior: smooth;
             transition: background-color 0.5s ease, color 0.5s ease;
             cursor: default;
+            font-size: 0.75rem; /* Further reduced base font size */
         }
+
+        /* Adjust specific element font sizes relative to the new base */
+        h1 { font-size: 3.5rem; } /* Reduced from 4rem/7rem */
+        h2 { font-size: 2.5rem; } /* Reduced from 4rem */
+        h3 { font-size: 1.75rem; } /* Reduced from 2rem/2.5rem */
+        p { font-size: 1.1rem; } /* Reduced from 1.125rem/1.25rem */
+        ul li { font-size: 1.1rem; } /* Reduced from 1.125rem */
+        .hero-section h1 { font-size: 4rem; } /* Reduced from 6rem/7rem */
+        .hero-section p { font-size: 1.25rem; } /* Reduced from 1.5rem/2rem */
+        .hero-text .typing-effect { font-size: 1.75rem; } /* Reduced from 2.5rem */
+        .timeline-item-date { font-size: 0.9rem; } /* Reduced from 1.125rem */
+        .toggle-abstract-btn { font-size: 0.8rem; } /* Reduced from 0.875rem */
+        .text-sm { font-size: 0.75rem; } /* Ensure existing text-sm is respected */
+        .text-md { font-size: 0.875rem; } /* Ensure existing text-md is respected */
+        .text-lg { font-size: 1rem; } /* Ensure existing text-lg is respected */
+        .text-xl { font-size: 1.125rem; } /* Ensure existing text-xl is respected */
+        .text-2xl { font-size: 1.25rem; } /* Ensure existing text-2xl is respected */
+        .text-3xl { font-size: 1.5rem; } /* Ensure existing text-3xl is respected */
+        .text-4xl { font-size: 2rem; } /* Ensure existing text-4xl is respected */
+        .text-6xl { font-size: 3rem; } /* Ensure existing text-6xl is respected */
+        .text-7xl { font-size: 3.5rem; } /* Ensure existing text-7xl is respected */
+
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -588,7 +611,7 @@
             text-align: center;
             font-weight: bold;
             color: var(--accent-blue);
-            font-size: 1.125rem;
+            font-size: 0.9rem; /* Adjusted for smaller base font */
         }
 
         .timeline-item-dot {
@@ -619,19 +642,19 @@
                 margin: 1rem auto;
             }
             .hero-section h1 {
-                font-size: 2.5rem;
+                font-size: 2rem; /* Adjusted for smaller base font */
             }
             .hero-section p {
-                font-size: 1rem;
+                font-size: 0.9rem; /* Adjusted for smaller base font */
             }
             .hero-text .typing-effect {
-                font-size: 1.5rem;
+                font-size: 1.25rem; /* Adjusted for smaller base font */
             }
             .project-card {
                 padding: 1rem;
             }
             .project-card h3 {
-                font-size: 1.5rem;
+                font-size: 1.25rem; /* Adjusted for smaller base font */
             }
 
             .timeline::before {
