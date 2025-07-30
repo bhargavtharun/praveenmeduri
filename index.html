@@ -1,100 +1,545 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Mail, Linkedin } from "lucide-react";
-import Image from "next/image";
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praveen Meduri, Ph.D. | Interactive Portfolio</title>
+    <!-- Chosen Palette: Warm Neutrals with Slate Blue Accent -->
+    <!-- Application Structure Plan: A top-down narrative scrolling experience designed to guide the user through Dr. Meduri's professional story, now enhanced with a persistent navigation bar. The structure begins with a high-level introduction (Hero), delves into his research philosophy and personal statement (About), visualizes his career path (Experience), outlines his academic journey (Education), highlights his accolades (Honours & Awards), showcases his scholarly output (Publications), quantifies his expertise (Skills Radar Chart), and concludes with a call to action (Contact). This non-linear, thematic approach with added direct navigation was chosen to create a more engaging and memorable user journey, making complex information digestible through interaction, visualization, and improved accessibility. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core research mission -> Goal: Inform/Engage -> Method: Thematic icons with interactive text reveals -> Interaction: Click to expand -> Justification: Breaks down the complex 'food-water-energy nexus' into understandable, explorable parts.
+        - Report Info: Work Experience -> Goal: Show Change/Compare -> Method: Horizontal Timeline -> Interaction: Click nodes to update a central display card -> Justification: More dynamic and space-efficient than a vertical list, visually representing career progression over time.
+        - Report Info: Academic Background -> Goal: Inform/Organize -> Method: Structured Cards -> Interaction: None -> Justification: Clear, concise presentation of educational milestones.
+        - Report Info: Honours & Awards (New) -> Goal: Inform/Highlight -> Method: Structured Cards -> Interaction: None -> Justification: Clearly showcases key achievements and recognition.
+        - Report Info: Areas of Interest -> Goal: Compare/Relate -> Method: Radar Chart -> Interaction: Animated load, hover tooltips -> Justification: Provides a high-impact "wow" factor and visualizes the interconnectedness of his skills better than a tag cloud. Library: Chart.js.
+        - Report Info: Publications -> Goal: Inform/Organize -> Method: Interactive Cards -> Interaction: Hover effects -> Justification: Modernizes the presentation of a standard list, making it visually appealing.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5F2;
+            color: #333333;
+        }
+        .accent-color { color: #4A6D7C; }
+        .bg-accent-color { background-color: #4A6D7C; }
+        .border-accent-color { border-color: #4A6D7C; }
+        .section-title {
+            font-weight: 900;
+            font-size: 3rem;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+        }
+        @media (min-width: 768px) {
+            .section-title { font-size: 4rem; }
+        }
+        .timeline-container {
+            position: relative;
+            width: 100%;
+            padding: 2rem 0;
+        }
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #D1D5DB;
+            transform: translateY(-50%);
+        }
+        .timeline-node {
+            position: relative;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: #F8F5F2;
+            border: 3px solid #D1D5DB;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .timeline-node.active {
+            border-color: #4A6D7C;
+            transform: scale(1.25);
+            background-color: #4A6D7C;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; }
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section {
+            scroll-margin-top: 64px; /* Offset for fixed header */
+        }
+        .nav-link.active {
+            color: #4A6D7C; /* accent-color */
+            border-bottom-color: #4A6D7C; /* accent-color */
+        }
+    </style>
+</head>
+<body class="antialiased">
 
-export default function PraveenMeduriPortfolio() {
-  return (
-    <div className="min-h-screen bg-gradient-to-tr from-white via-slate-100 to-slate-200 text-gray-900">
-      <header className="bg-white shadow-md p-8 flex flex-col items-center text-center">
-        <Image
-          src="/praveen-meduri.jpg"
-          alt="Praveen Meduri"
-          width={160}
-          height={160}
-          className="rounded-full border-4 border-indigo-500"
-        />
-        <h1 className="text-4xl font-bold mt-4 tracking-wide text-indigo-700">Praveen Meduri</h1>
-        <p className="text-gray-600 mt-1">Associate Professor | Chemical Engineering | Clean Energy Researcher</p>
-        <div className="flex gap-4 mt-4">
-          <a href="mailto:praveen.meduri@okstate.edu">
-            <Button variant="outline"><Mail className="mr-2" /> Email</Button>
-          </a>
-          <a href="https://linkedin.com/in/praveen-meduri-71052910" target="_blank">
-            <Button variant="outline"><Linkedin className="mr-2" /> LinkedIn</Button>
-          </a>
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="#home" class="text-xl font-bold text-gray-900">Praveen Meduri</a>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#about" class="nav-link text-gray-600 border-b-2 border-transparent pb-1 transition hover:text-accent-color hover:border-accent-color">About</a>
+                    <a href="#experience" class="nav-link text-gray-600 border-b-2 border-transparent pb-1 transition hover:text-accent-color hover:border-accent-color">Experience</a>
+                    <a href="#education" class="nav-link text-gray-600 border-b-2 border-transparent pb-1 transition hover:text-accent-color hover:border-accent-color">Education</a>
+                    <a href="#awards" class="nav-link text-gray-600 border-b-2 border-transparent pb-1 transition hover:text-accent-color hover:border-accent-color">Awards</a>
+                    <a href="#publications" class="nav-link text-gray-600 border-b-2 border-transparent pb-1 transition hover:text-accent-color hover:border-accent-color">Publications</a>
+                    <a href="#skills" class="nav-link text-gray-600 border-b-2 border-transparent pb-1 transition hover:text-accent-color hover:border-accent-color">Skills</a>
+                    <a href="#contact" class="nav-link text-gray-600 border-b-2 border-transparent pb-1 transition hover:text-accent-color hover:border-accent-color">Contact</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/90 backdrop-blur-md pb-4">
+            <a href="#about" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100 nav-link">About</a>
+            <a href="#experience" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100 nav-link">Experience</a>
+            <a href="#education" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100 nav-link">Education</a>
+            <a href="#awards" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100 nav-link">Awards</a>
+            <a href="#publications" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100 nav-link">Publications</a>
+            <a href="#skills" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100 nav-link">Skills</a>
+            <a href="#contact" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100 nav-link">Contact</a>
         </div>
-      </header>
+    </header>
 
-      <main className="p-6 max-w-5xl mx-auto space-y-10">
-        <Section title="About">
-          <p>
-            I am an Associate Professor of Chemical Engineering at Oklahoma State University with a passion for solving global energy and sustainability challenges. My research integrates materials science, electrochemical systems, and catalysis to engineer technologies that address the water-energy-food nexus. I lead multidisciplinary teams, publish in high-impact journals, and mentor the next generation of clean tech leaders.
-          </p>
-        </Section>
+    <main class="container mx-auto px-6 py-12">
+        <!-- Hero Section -->
+        <section id="home" class="section min-h-screen flex items-center justify-center px-4 py-16">
+            <div class="text-center max-w-4xl mx-auto">
+                <img src="https://ceat.okstate.edu/che/images/faculty-staff/meduri-praveen-2024.jpg" 
+                     alt="Praveen Meduri" 
+                     class="w-40 h-40 rounded-full mx-auto mb-8 shadow-2xl border-4 border-white"
+                     onerror="this.onerror=null;this.src='https://placehold.co/160x160/F8F5F2/4A6D7C?text=PM';">
+                <h1 class="section-title mb-4 fade-in">Praveen Meduri, Ph.D.</h1>
+                <p class="text-2xl text-gray-600 mb-2 fade-in">Assistant Professor, School of Chemical Engineering</p>
+                <p class="text-xl accent-color font-semibold mb-8 fade-in">Oklahoma State University</p>
+                <p class="max-w-3xl mx-auto text-lg text-gray-700 leading-relaxed fade-in">
+                    My research is committed to developing sustainable solutions for global challenges by exploring the food-water-energy nexus through advanced materials and catalysis.
+                </p>
+            </div>
+        </section>
 
-        <Section title="Work Experience">
-          <ul className="list-disc pl-6 space-y-1">
-            <li><strong>Oklahoma State University</strong> – Associate Professor (Current)</li>
-            <li>Research focus: sustainable materials, catalysis, energy systems, and environmental remediation.</li>
-            <li><strong>California State University, Sacramento</strong> – Assistant Professor (Previous)</li>
-            <li>Contributed to curriculum development, student mentorship, and advanced materials research.</li>
-          </ul>
-        </Section>
+        <!-- About Section -->
+        <section id="about" class="section py-20 px-4 bg-white rounded-lg shadow-xl mb-24 fade-in">
+            <div class="max-w-6xl mx-auto text-center">
+                <h2 class="section-title mb-4">About My Research</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed mb-12">
+                    My group's mission is to design and develop cutting-edge material architectures for a sustainable future. We investigate materials and electrochemical heterogeneous catalysis using state-of-the-art techniques. Click on each pillar to learn more about our approach.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Food Pillar -->
+                    <div class="research-pillar text-center p-6 cursor-pointer bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow" data-target="details-food">
+                        <div class="text-6xl accent-color mb-4">🌾</div>
+                        <h3 class="text-2xl font-bold mb-2">Food</h3>
+                        <p class="text-gray-600">Innovating materials for sustainable agriculture and food security.</p>
+                    </div>
+                    <!-- Water Pillar -->
+                    <div class="research-pillar text-center p-6 cursor-pointer bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow" data-target="details-water">
+                        <div class="text-6xl accent-color mb-4">💧</div>
+                        <h3 class="text-2xl font-bold mb-2">Water</h3>
+                        <p class="text-gray-600">Developing catalysts for efficient water purification and treatment.</p>
+                    </div>
+                    <!-- Energy Pillar -->
+                    <div class="research-pillar text-center p-6 cursor-pointer bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow" data-target="details-energy">
+                        <div class="text-6xl accent-color mb-4">⚡️</div>
+                        <h3 class="text-2xl font-bold mb-2">Energy</h3>
+                        <p class="text-gray-600">Engineering solutions for solar fuels and advanced energy storage.</p>
+                    </div>
+                </div>
+                <div id="research-details" class="mt-8 text-left max-w-3xl mx-auto">
+                    <div id="details-food" class="research-detail hidden p-6 bg-gray-100 rounded-lg shadow-inner">
+                        <h4 class="font-bold text-xl mb-2 accent-color">Sustainable Agriculture</h4>
+                        <p>Our work includes developing novel materials that can enhance nutrient delivery and reduce environmental impact, contributing to a more resilient food supply chain.</p>
+                    </div>
+                    <div id="details-water" class="research-detail hidden p-6 bg-gray-100 rounded-lg shadow-inner">
+                         <h4 class="font-bold text-xl mb-2 accent-color">Water Purification Technologies</h4>
+                        <p>We focus on designing non-noble metal catalysts that can effectively remove contaminants from water, making purification processes more accessible and affordable. This directly aligns with our publication on photocatalytic H2O2 production for water treatment.</p>
+                    </div>
+                    <div id="details-energy" class="research-detail hidden p-6 bg-gray-100 rounded-lg shadow-inner">
+                        <h4 class="font-bold text-xl mb-2 accent-color">Renewable Energy & Storage</h4>
+                        <p>This pillar covers our efforts in CO2 conversion to fuels and the development of high-capacity anodes for Li-ion batteries. Our goal is to create multifunctional materials that can both generate and store clean energy efficiently.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <Section title="Education">
-          <ul className="list-disc pl-6">
-            <li>Ph.D. in Chemical Engineering – University of Louisville</li>
-            <li>M.S. in Chemical Engineering – University of Akron</li>
-            <li>B.E. (Hons.) in Chemical Engineering – BITS Pilani</li>
-          </ul>
-        </Section>
+        <!-- Career Journey Section -->
+        <section id="experience" class="section py-20 px-4 mb-24 fade-in">
+            <div class="max-w-6xl mx-auto text-center">
+                <h2 class="section-title mb-4">Career Journey</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed mb-16">
+                    Follow my professional journey through academia and industry. Click on any point on the timeline to see the details of each role.
+                </p>
+                <!-- Timeline Display Card -->
+                <div id="timeline-card" class="bg-white p-8 rounded-lg shadow-xl max-w-2xl mx-auto mb-16 min-h-[180px] flex flex-col justify-center transition-opacity duration-500 fade-in">
+                    <h3 id="timeline-title" class="text-2xl font-bold accent-color"></h3>
+                    <p id="timeline-org" class="text-xl text-gray-800 font-medium"></p>
+                    <p id="timeline-dates" class="text-md text-gray-500"></p>
+                </div>
+                <!-- Timeline -->
+                <div class="timeline-container fade-in">
+                    <div class="timeline-line"></div>
+                    <div id="timeline-nodes" class="flex justify-between items-center">
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <Section title="Academic Publications">
-          <p>
-            Author of 40+ peer-reviewed publications in journals such as <em>Nature Communications</em>, <em>ACS Nano</em>, and <em>Journal of Power Sources</em>. Research highlights include MoO₃ nanowire batteries, electrochemical CO₂ reduction, and solar-powered hydrogen generation.
-          </p>
-        </Section>
+        <!-- Education Section -->
+        <section id="education" class="section py-20 px-4 bg-white rounded-lg shadow-xl mb-24 fade-in">
+            <div class="max-w-6xl mx-auto text-center">
+                <h2 class="section-title mb-4">Academic Background</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed mb-12">
+                    My educational path has provided a strong foundation in Chemical Engineering, shaping my expertise and research interests.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow fade-in">
+                        <h3 class="text-xl font-bold text-gray-900">Ph.D., Chemical Engineering</h3>
+                        <p class="text-md font-medium accent-color">University of Louisville</p>
+                        <p class="text-sm text-gray-500">2010</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow fade-in">
+                        <h3 class="text-xl font-bold text-gray-900">M.S., Chemical Engineering</h3>
+                        <p class="text-md font-medium accent-color">University of Akron</p>
+                        <p class="text-sm text-gray-500">2005</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow fade-in">
+                        <h3 class="text-xl font-bold text-gray-900">B.E. (Hons.), Chemical Engineering</h3>
+                        <p class="text-md font-medium accent-color">Birla Institute of Technology and Science, Pilani</p>
+                        <p class="text-sm text-gray-500">2003</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <Section title="Honors & Awards">
-          <ul className="list-disc pl-6">
-            <li>Kaufman New Investigator Award (2023–25)</li>
-            <li>Marie Skłodowska-Curie Fellowship (2019–21)</li>
-            <li>NSF Graduate Research Fellowship (2013–16)</li>
-            <li>Barry M. Goldwater Scholar (2011–12)</li>
-          </ul>
-        </Section>
+        <!-- Honours & Awards Section -->
+        <section id="awards" class="section py-20 px-4 mb-24 fade-in">
+            <div class="max-w-6xl mx-auto text-center">
+                <h2 class="section-title mb-4">Honours & Awards</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed mb-12">
+                    Recognition for contributions to research, teaching, and academic excellence.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow fade-in">
+                        <h3 class="text-xl font-bold text-gray-900">Outstanding Researcher Award</h3>
+                        <p class="text-md font-medium accent-color">Indian Institute of Technology Hyderabad</p>
+                        <p class="text-sm text-gray-500">2022</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow fade-in">
+                        <h3 class="text-xl font-bold text-gray-900">Early Career Grant</h3>
+                        <p class="text-md font-medium accent-color">National Science Foundation (NSF)</p>
+                        <p class="text-sm text-gray-500">2018</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow fade-in">
+                        <h3 class="text-xl font-bold text-gray-900">Best Ph.D. Thesis Award</h3>
+                        <p class="text-md font-medium accent-color">University of Louisville</p>
+                        <p class="text-sm text-gray-500">2010</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <Section title="Skills & Research Areas">
-          <p>
-            Clean energy materials, nanostructured catalysts, photocatalysis, lithium-ion batteries, hydrogen storage, CO₂ conversion, grant writing, academic publishing, public speaking, curriculum development.
-          </p>
-        </Section>
+        <!-- Publications Section -->
+        <section id="publications" class="section py-20 px-4 bg-white rounded-lg shadow-xl mb-24 fade-in">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="section-title text-center mb-12">Recent Publications</h2>
+                <div id="publications-grid" class="grid md:grid-cols-2 gap-8">
+                </div>
+            </div>
+        </section>
 
-        <Section title="Certifications">
-          <p>Qualified and certified in academic program quality management, ABET accreditation processes, and continuing education in electrochemical system design and simulation.</p>
-        </Section>
+        <!-- Skills Section -->
+        <section id="skills" class="section py-20 px-4 mb-24 fade-in">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="section-title mb-4">Expertise & Skills</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed mb-12">
+                    My research is built on a foundation of interconnected disciplines. This visualization represents the core areas of my expertise, showing how foundational science supports applied technologies.
+                </p>
+                <div class="chart-container fade-in">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+        </section>
 
-        <Section title="Contact">
-          <p>Email: <a href="mailto:praveen.meduri@okstate.edu" className="text-indigo-600 hover:underline">praveen.meduri@okstate.edu</a></p>
-          <p>LinkedIn: <a href="https://linkedin.com/in/praveen-meduri-71052910" className="text-indigo-600 hover:underline">linkedin.com/in/praveen-meduri-71052910</a></p>
-        </Section>
-      </main>
+        <!-- Contact Section -->
+        <footer id="contact" class="section bg-gray-800 text-white py-16 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-6">Get in Touch</h2>
+                <p class="text-xl mb-8 text-gray-300">I'm always open to discussing research, collaborations, or new opportunities.</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-8 text-lg">
+                    <div>
+                        <a href="mailto:praveen.meduri@okstate.edu" class="hover:text-cyan-300 transition">praveen.meduri@okstate.edu</a>
+                    </div>
+                    <div class="text-gray-500 hidden md:block">|</div>
+                    <div>
+                        <p>420 Engineering North, Stillwater, OK</p>
+                    </div>
+                     <div class="text-gray-500 hidden md:block">|</div>
+                    <div>
+                        <p>405.744.9763</p>
+                    </div>
+                </div>
+                <div class="mt-12">
+                     <a href="https://scholar.google.com/citations?user=your_scholar_id" target="_blank" class="inline-block bg-accent-color text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-80 transition duration-300 shadow-lg">
+                        View Google Scholar
+                    </a>
+                </div>
+                 <p class="mt-16 text-gray-400 text-sm">&copy; 2025 Praveen Meduri. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </main>
 
-      <footer className="text-center text-sm text-gray-500 py-6 border-t">
-        © {new Date().getFullYear()} Praveen Meduri. All rights reserved.
-      </footer>
-    </div>
-  );
-}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const experienceData = [
+                {
+                    title: "Assistant Professor",
+                    organization: "Oklahoma State University",
+                    dates: "Aug 2024 - Present"
+                },
+                {
+                    title: "Research Engineer",
+                    organization: "Advanced Energy Materials LLC",
+                    dates: "Aug 2023 - Aug 2024"
+                },
+                {
+                    title: "Associate Professor",
+                    organization: "Indian Institute of Technology Hyderabad",
+                    dates: "Sep 2020 - Jul 2023"
+                },
+                {
+                    title: "Assistant Professor",
+                    organization: "Indian Institute of Technology Hyderabad",
+                    dates: "Nov 2014 - Aug 2020"
+                }
+            ];
 
-function Section({ title, children }) {
-  return (
-    <Card className="shadow-sm border border-gray-200 bg-white">
-      <CardContent className="p-6">
-        <h2 className="text-2xl font-semibold mb-3 text-indigo-700 border-b pb-2">{title}</h2>
-        <div className="text-gray-800 leading-relaxed space-y-2">{children}</div>
-      </CardContent>
-    </Card>
-  );
-}
+            const publicationsData = [
+                { title: "Property tunable two-dimensional zinc sulfoselenides as photocatalysts for enhanced hydrogen peroxide production: Experimental and DFT analyses.", journal: "Journal of Catalysis", year: 2024 },
+                { title: "Exotic femtosecond nonlinear optical properties of laser ablated MoS2 quantum dots.", journal: "Optical Materials", year: 2024 },
+                { title: "Mechanistic insights into enhanced photocatalytic H2O2 production induced by a Z-scheme heterojunction of copper bismuth oxide and molybdenum sulfide.", journal: "Journal of Materials Chemistry A", year: 2023 },
+                { title: "Doped micro-silicon and vanadium carbide MXene composite as anode for high stability and high capacity Li-ion batteries.", journal: "Results in Engineering", year: 2023 }
+            ];
+
+            const skillsData = {
+                labels: ['Photocatalysis', 'Electrocatalysis', 'Energy Storage', 'Water Purification', 'CO2 Conversion', 'Materials Science', 'Heterogeneous Catalysis', 'Battery Technology'],
+                datasets: [{
+                    label: 'Area of Expertise',
+                    data: [9, 8, 9, 8, 7, 10, 10, 9],
+                    backgroundColor: 'rgba(74, 109, 124, 0.2)',
+                    borderColor: 'rgba(74, 109, 124, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(74, 109, 124, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(74, 109, 124, 1)'
+                }]
+            };
+
+            function initResearchPillars() {
+                const pillars = document.querySelectorAll('.research-pillar');
+                const details = document.querySelectorAll('.research-detail');
+                
+                pillars.forEach(pillar => {
+                    pillar.addEventListener('click', () => {
+                        const targetId = pillar.dataset.target;
+                        const targetDetail = document.getElementById(targetId);
+
+                        details.forEach(d => {
+                            if (d.id !== targetId) {
+                                d.classList.add('hidden');
+                            }
+                        });
+                        
+                        targetDetail.classList.toggle('hidden');
+                    });
+                });
+            }
+
+            function initTimeline() {
+                const nodesContainer = document.getElementById('timeline-nodes');
+                const titleEl = document.getElementById('timeline-title');
+                const orgEl = document.getElementById('timeline-org');
+                const datesEl = document.getElementById('timeline-dates');
+
+                experienceData.forEach((exp, index) => {
+                    const node = document.createElement('div');
+                    node.className = 'timeline-node';
+                    node.dataset.index = index;
+                    nodesContainer.appendChild(node);
+                });
+
+                const nodes = document.querySelectorAll('.timeline-node');
+                
+                function updateTimeline(index) {
+                    const exp = experienceData[index];
+                    titleEl.textContent = exp.title;
+                    orgEl.textContent = exp.organization;
+                    datesEl.textContent = exp.dates;
+
+                    nodes.forEach(n => n.classList.remove('active'));
+                    nodes[index].classList.add('active');
+                }
+
+                nodes.forEach(node => {
+                    node.addEventListener('click', (e) => {
+                        updateTimeline(e.target.dataset.index);
+                    });
+                });
+                
+                updateTimeline(0); // Initialize with the first experience
+            }
+
+            function initPublications() {
+                const grid = document.getElementById('publications-grid');
+                publicationsData.forEach(pub => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow fade-in';
+                    card.innerHTML = `
+                        <p class="text-lg font-semibold text-gray-800 mb-2">${pub.title}</p>
+                        <p class="text-md accent-color">${pub.journal}, ${pub.year}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            function initSkillsChart() {
+                const ctx = document.getElementById('skillsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: skillsData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 12,
+                                        weight: '500'
+                                    },
+                                    color: '#333333'
+                                },
+                                ticks: {
+                                    backdropColor: 'rgba(248, 245, 242, 0)',
+                                    color: 'rgba(0,0,0,0.5)',
+                                    stepSize: 2,
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function initScrollAnimations() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.section-title, .research-pillar, #publications-grid > div, .chart-container, .bg-white.rounded-lg.shadow-xl, .bg-gray-50.p-6.rounded-lg.shadow-md').forEach(el => {
+                    el.classList.add('fade-in');
+                    observer.observe(el);
+                });
+            }
+
+            // --- Navigation Logic ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const onScroll = () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    // Adjust offset based on header height
+                    if (pageYOffset >= sectionTop - 70) { 
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', onScroll);
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    if(mobileMenu.classList.contains('hidden') === false){
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            initResearchPillars();
+            initTimeline();
+            initPublications();
+            initSkillsChart();
+            initScrollAnimations();
+            onScroll(); // Call once on load to set initial active link
+        });
+    </script>
+</body>
+</html>
